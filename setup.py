@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="nbmod-jakekara", 
+    name="nbmod", 
     version="0.0.1",
     author="Jake Kara",
     author_email="jake@jakekara.com",
