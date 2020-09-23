@@ -1,5 +1,6 @@
 import os
 
+
 def find_notebook(fullname, path=None):
     """find a notebook, given its fully qualified name and an optional path
 
@@ -7,9 +8,9 @@ def find_notebook(fullname, path=None):
     and tries turning "Foo_Bar" into "Foo Bar" if Foo_Bar
     does not exist.
     """
-    name = fullname.rsplit('.', 1)[-1]
+    name = fullname.rsplit(".", 1)[-1]
     if not path:
-        path = ['']
+        path = [""]
     for d in path:
         nb_path = os.path.join(d, name + ".ipynb")
         if os.path.isfile(nb_path):

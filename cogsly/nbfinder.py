@@ -2,8 +2,10 @@ from .find_notebook import find_notebook
 from .nbloader import NotebookLoader
 import os
 
+
 class NotebookFinder(object):
     """Module finder that locates Jupyter Notebooks"""
+
     def __init__(self):
         self.loaders = {}
 
