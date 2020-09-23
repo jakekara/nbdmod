@@ -6,7 +6,7 @@ from nbformat import read
 from IPython.core.interactiveshell import InteractiveShell
 from IPython import get_ipython
 
-from .find_notebook import find_notebook
+from ..find_notebook import find_notebook
 
 class NotebookLoader(object):
     """Module Loader for Jupyter Notebooks"""
