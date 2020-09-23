@@ -6,7 +6,7 @@ from nbformat import read
 from IPython.core.interactiveshell import InteractiveShell
 from IPython import get_ipython
 
-from ..find_notebook import find_notebook
+from .find_notebook import find_notebook
 
 class NotebookLoader(object):
     """Module Loader for Jupyter Notebooks"""
@@ -22,7 +22,6 @@ class NotebookLoader(object):
         with io.open(path, 'r', encoding='utf-8') as f:
             nb = read(f, 4)
 
-
         # create the module and add it to sys.modules
         # if name in sys.modules:
         #    return sys.modules[name]
@@ -37,17 +36,21 @@ class NotebookLoader(object):
         save_user_ns = self.shell.user_ns
         self.shell.user_ns = mod.__dict__
 
+        virtual_document = ""
         try:
           for cell in nb.cells:
             if cell.cell_type == 'code':
-                # transform the input to executable Python
-                code = self.shell.input_transformer_manager.transform_cell(cell.source)
 
-                if (code.startswith("#NBMODULE_IGNORE")):
+                if (cell.source.startswith("#NBMODULE_IGNORE")):
                     continue
 
-                # run the code in the module
-                exec(code, mod.__dict__)
+                # append the code to document
+                virtual_document = virtual_document + cell.source + "\n"
         finally:
-            self.shell.user_ns = save_user_ns
+            pass
+            # self.shell.user_ns = save_user_ns
+
+        exec(virtual_document, mod.__dict__)
+        # self.shell.user_ns = save_user_ns 
+
         return mod
