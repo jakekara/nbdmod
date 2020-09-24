@@ -7,7 +7,7 @@ Import notebooks in Python using nbdlang (notebook description language).
 If you have a file called "notebook.ipynb" somewhere you can import it.
 
 ```python
-from cogsly import nbloader
+from nbdmod import nbloader
 import notebook
 ```
 

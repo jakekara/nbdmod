@@ -1,6 +1,6 @@
 import pytest
 
-from cogsly.preprocessor import parse_preamble
+from nbdmod.preprocessor import parse_preamble
 
 
 

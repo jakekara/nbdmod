@@ -1,4 +1,4 @@
-from cogsly.preprocessor import preamble
+from nbdmod.preprocessor import preamble
 
 def test_processes_empty_soure():
    assert preamble("") == ""
