@@ -10,6 +10,7 @@ class NotebookFinder(object):
         self.loaders = {}
 
     def find_module(self, fullname, path=None):
+
         nb_path = find_notebook(fullname, path)
         if not nb_path:
             return
