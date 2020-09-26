@@ -23,7 +23,6 @@ class NotebookLoader(object):
 
         path = find_notebook(fullname, self.path)
 
-
         # Process .nbpy formatted files
         if path.endswith(".nbpy"):
             cells = get_nbpy_cells(open(path).read())
@@ -48,7 +47,6 @@ class NotebookLoader(object):
 
         virtual_document = ""
 
-        
         try:
             processor = Preprocessor(mod)
             processor.process_cells(cells)
