@@ -7,6 +7,7 @@ from IPython import get_ipython
 
 from .find_notebook import find_notebook
 from .preprocessor import Preprocessor
+from .nbpy_splitter import get_nbpy_cells
 
 
 class NotebookLoader(object):
@@ -22,9 +23,14 @@ class NotebookLoader(object):
 
         path = find_notebook(fullname, self.path)
 
-        # load the notebook object
-        with io.open(path, "r", encoding="utf-8") as f:
-            nb = read(f, 4)
+
+        # Process .nbpy formatted files
+        if path.endswith(".nbpy"):
+            cells = get_nbpy_cells(open(path).read())
+        elif path.endswith(".ipynb"):
+            # load the notebook object
+            with io.open(path, "r", encoding="utf-8") as f:
+                cells = read(f, 4).cells
 
         # create the module and add it to sys.modules
         # if name in sys.modules:
@@ -41,9 +47,11 @@ class NotebookLoader(object):
         self.shell.user_ns = mod.__dict__
 
         virtual_document = ""
+
+        
         try:
             processor = Preprocessor(mod)
-            processor.process_cells(nb.cells)
+            processor.process_cells(cells)
         finally:
             self.shell.user_ns = save_user_ns
 
