@@ -19,3 +19,8 @@ def find_notebook(fullname, path=None):
         nb_path = nb_path.replace("_", " ")
         if os.path.isfile(nb_path):
             return nb_path
+
+        # load .nbpy documents
+        nbpy_path = os.path.join(d, name + ".nbpy")
+        if os.path.isfile(nbpy_path):
+            return nbpy_path

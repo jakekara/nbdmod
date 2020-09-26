@@ -1,0 +1,23 @@
+# This is a .py "notebook in that it uses code cells
+# from vs code, splitting cells with a "# %%" comment
+# It's the same code that is represented by 
+# hello_notebook.ipynb
+
+# When we combine this with the nbdlang syntax to 
+# describe how the notebook should be imported, it 
+# becomes a potentially much more powerful document,
+# with different representations based on the context.
+# This extends the concept of a plain source file.
+
+# %%
+#: ignore-cell ::
+# This code should not be executed
+should_not_export = 100
+
+# %%
+should_export = 200
+
+# %%
+#: ignore-cell ::
+# This code should not be executed
+should_export = 500
