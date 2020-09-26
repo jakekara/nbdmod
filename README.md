@@ -2,6 +2,11 @@
 
 Import notebooks in Python using nbdlang (notebook description language).
 
+This works with Jupyter Notebooks (.ipynb files) as well as python files with
+vscode code cells using the file extension `.pynb`. These are plain source
+Python files that use "# %%" to split the document into cells. [Read more
+here](https://code.visualstudio.com/docs/python/jupyter-support-py).
+
 ## Usage
 
 If you have a file called "notebook.ipynb" somewhere you can import it.
@@ -12,6 +17,10 @@ import notebook
 ```
 
 That's it.
+
+For examples look in the test_notebooks directory. (Copy them rather than
+altering these files, because the tests use these files and will fail if you
+edit them.)
 
 ## Support for nbdlang syntax
 
@@ -50,13 +59,18 @@ import hhgtg
 ... the `hhgtg.meaning_of_life` variable will not be defined as it normally
 would. Instead it will be defined in `hhgtg.philosophy.meaning_of_life`.
 
-This allows for multiple "views" of a module, as defined in [Calliss 1991, A comparison of module constructs in programming languages](https://dl.acm.org/doi/10.1145/122203.122206)
+This allows for multiple "views" of a module, as defined in [Calliss 1991, A
+comparison of module constructs in programming
+languages](https://dl.acm.org/doi/10.1145/122203.122206)
 
 ## Method
 
 Code adapted from here:
 https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html
 
-This approach has struggled to gain ground as a useful tool, and I submit that's
-because it is not useful to simply import notebooks. There needs to be a
-language to describe how they are imported.
+This approach has struggled to gain general use. I think that's mainly because
+notebook code is not currently written to be imported elsewhere. There are often
+cells that do not make sense to execute outside of the notebook context (in the
+module context). With [nbdlang](https://github.com/jakekara/nbdl/), we can use
+`ignore-cell` and other syntax features to describe how notebooks should be
+imported.
