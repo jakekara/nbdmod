@@ -5,7 +5,6 @@ find its definition and this was faster for now.
 
 """
 
-
 class FakeCell:
     def __init__(self):
         self.cell_type = "code"
