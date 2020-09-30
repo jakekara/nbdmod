@@ -2,7 +2,8 @@ import io
 import sys
 import types
 from nbformat import read
-from IPython.core.interactiveshell import InteractiveShell
+
+# from IPython.core.interactiveshell import InteractiveShell
 from IPython import get_ipython
 
 from .find_notebook import find_notebook
@@ -14,9 +15,10 @@ class NotebookLoader(object):
 
     """Module Loader for Jupyter Notebooks"""
 
-    def __init__(self, path=None):
-        self.shell = InteractiveShell.instance()
+    def __init__(self, path=None, target=None):
+        # self.shell = InteractiveShell.instance()
         self.path = path
+        self.target = target
 
     def load_module(self, fullname):
         """import a notebook as a module"""
@@ -42,8 +44,8 @@ class NotebookLoader(object):
 
         # extra work to ensure that magics that would affect the user_ns
         # actually affect the notebook module's ns
-        save_user_ns = self.shell.user_ns
-        self.shell.user_ns = mod.__dict__
+        # save_user_ns = self.shell.user_ns
+        # self.shell.user_ns = mod.__dict__
 
         virtual_document = ""
 
@@ -51,6 +53,6 @@ class NotebookLoader(object):
             processor = Preprocessor(mod)
             processor.process_cells(cells)
         finally:
-            self.shell.user_ns = save_user_ns
-
+            # self.shell.user_ns = save_user_ns
+            pass
         return mod

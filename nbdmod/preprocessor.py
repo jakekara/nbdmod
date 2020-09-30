@@ -35,6 +35,19 @@ def parse_preamble(cell):
     return parser.parse(preamble(cell))
 
 
+# TODO - This is is just a quick hack until I evaluate
+# how to handle magics — which are valid IPython but not
+# valid Python. Can/should I just execute all the code
+# in IPython instead? For now, just sidestepping issue
+def remove_magics(source):
+    ret = ""
+    for line in source.splitlines():
+        if line.strip().startswith("%"):
+            continue
+        ret += line
+    return ret
+
+
 def process_cell(cell):
 
     if cell.cell_type != "code":
@@ -57,7 +70,7 @@ def process_cell(cell):
     if IGNORE:
         return ""
 
-    return cell.source + "\n"
+    return remove_magics(cell.source) + "\n"
 
 
 class Preprocessor:
