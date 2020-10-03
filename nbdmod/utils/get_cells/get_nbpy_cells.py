@@ -15,7 +15,7 @@ def get_nbpy_cells_recursively(source_lines, cell_list=[]):
         if line.strip().startswith("# %%") or line.strip().startswith("#%%"):
             break
 
-        cell.append_source(line)
+        cell.append_source(line + "\n")
         line_index += 1
 
     if (line_index + 1) < len(source_lines):

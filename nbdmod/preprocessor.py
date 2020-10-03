@@ -3,6 +3,9 @@
 """
 from notebook_description_language import parser
 import json
+import re
+import sys
+import types
 
 
 def preamble(source: str):
@@ -44,38 +47,63 @@ def remove_magics(source):
     for line in source.splitlines():
         if line.strip().startswith("%"):
             continue
-        ret += line
+        ret += line + "\n"
     return ret
 
 
 def process_cell(cell):
 
     if cell.cell_type != "code":
-        return ""
+        return ([], "")
 
-    # old way works but not extensible
-    # if cell.source.startswith("#: ignore-cell ::"):
-    #     return ""
     try:
         preamble_instructions = parse_preamble(cell.source)
-    except:
+    except Exception as e:
         # Ignore invalid syntax
-        preamble_instructions = []
+        raise Exception("Error parsing cell nbdlang:" + str(e))
+        # preamble_instructions = []
 
-    IGNORE = False
+    # ignore = False
+    # for instruction in preamble_instructions:
+    #     if instruction == "IGNORE_CELL":
+    #         ignore = True
+
+    # if ignore:
+    #     return ([],"")
+
+    return (preamble_instructions, remove_magics(cell.source))
+
+
+def get_views(preamble_instructions):
+    ret = []
     for instruction in preamble_instructions:
-        if instruction == "IGNORE_CELL":
-            IGNORE = True
+        if not type(instruction) == tuple:
+            continue
+        if not len(instruction) == 2:
+            continue
+        if not instruction[0] == "view":
+            continue
+        # if not instruction[1][0].startswith("module."):
+        #     continue
+        for view_name in instruction[1]:
+            if not type(view_name) == str:
+                continue
+            matches = re.match(r"module.(?P<submodule_name>[a-zA-Z0-9_\.]*)", view_name)
+            if matches is None:
+                continue
+            submodule_name = matches.groupdict()["submodule_name"]
 
-    if IGNORE:
-        return ""
+            if not len(submodule_name) > 0:
+                continue
 
-    return remove_magics(cell.source) + "\n"
+            ret.append(submodule_name)
+    return ret
 
 
 class Preprocessor:
-    def __init__(self, module):
+    def __init__(self, module, name):
         self.module = module
+        self.name = name
 
     def process_cells(self, cells):
         virtual_document = ""
@@ -86,6 +114,31 @@ class Preprocessor:
             self.module.__doc__ = cells[0].source
 
         for cell in cells:
-            virtual_document += process_cell(cell)
+            # virtual_document += process_cell(cell)
+            cell_preamble, cell_source = process_cell(cell)
 
-        exec(virtual_document, self.module.__dict__)
+            # ignore-cell support
+            if "IGNORE_CELL" in cell_preamble:
+                continue
+
+            # view: module.view_name support ::
+            views = get_views(cell_preamble)
+            for view in views:
+                full_view_name = self.name + "." + view
+
+                if full_view_name in sys.modules:
+                    mod = sys.modules[full_view_name]
+                else:
+                    mod = types.ModuleType(full_view_name)
+                    sys.modules[full_view_name] = mod
+                exec(cell_source, mod.__dict__)
+                # TODO - This version does not do it, but I should
+                # probably execute every cell in a view. Cells
+                # without a view specified should run in a default
+                # view, and then that view should be assigned to the main
+                # module at the end
+                self.module.__dict__[view] = mod
+
+            exec(cell_source, self.module.__dict__)
+
+        # exec(virtual_document, self.module.__dict__)
