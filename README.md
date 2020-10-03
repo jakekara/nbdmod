@@ -3,6 +3,16 @@
 Import notebooks in Python using nbdlang (notebook description language). (Not
 just Jupyter Notebooks, it also imports Python files that use "# %%" code cells)
 
+## Install and develop
+
+While in development, this must be installed from github repos
+
+```bash
+git clone git@github.com:jakekara/nbdmod.git
+cd nbdmod
+python setup.py develop
+```
+
 ## Usage
 
 Assuming you have a file called "notebook.ipynb" somewhere in your import path:
@@ -42,38 +52,59 @@ syntax features will be implemented by this library
 
 ### ignore-cell
 
-**This feature is imeplemented.**
-
 This directive excludes the cell's contents during the import, so it is wholly
 ignored by the importing code. This is great to use on one-time computations in
 notebooks which don't make sense outside of the notebook context.
 
+Example:
+
+```python
+#: ignore-cell ::
+```
+
 ### view: {view_name}
 
-**This feature is not yet implemented**
-
-This executes a code's cell inside a programmatically defined module named
+This executes a code's cell inside a dynamically defined module named
 `{view_name}` during the import.
 
 Let's say this code was inside a notebook called "hhgtg.ipynb"...
 
 ```python
-#: view: philosophy
+#: view: module.philosophy
 meaning_of_life = 42
 ```
 
-... and you import it with ...
+Now you can access just the cells marked as belonging to the philosophy
+submodule with the following:
 
 ```python
-import hhgtg
+>>> from hhgtg import philosophy
+>>> print philosophy.meaning_of_life
 ```
 
-... the `hhgtg.meaning_of_life` variable will not be defined as it normally
-would. Instead it will be defined in `hhgtg.philosophy.meaning_of_life`.
-
-This allows for multiple "views" of a module, as defined in [Calliss 1991, A
-comparison of module constructs in programming
+This allows for multiple "views" of the same source code module, as defined in
+[Calliss 1991, A comparison of module constructs in programming
 languages](https://dl.acm.org/doi/10.1145/122203.122206)
+
+**Note:** For now, code that is marked with views is still considered part of
+the root module as well as the virtual submodule. So you will see
+`meaning_of_life` exists both in `hhgtg` and `hhgtg.philosophy`
+
+```python
+>>> import hhgtg
+>>> hhgtg.philosophy.meaning_of_life
+42
+>>> hhgtg.meaning_of_life
+42
+```
+
+This doesn't feel like the best solution, but if every cell with a view tag is
+removed entirely from the root notebook context, this could require a lot more
+markup on the part of notebook developers. So I'm not sure what the best
+solution is yet. One option is the create a notebook context that includes every
+cell, a module cell that includes every cell not marked with `ignore-cell` and
+create any user-defined submodules that contain only the cells explicity marked
+with one or more `view` tags.
 
 ## Working with "# %%" code cells
 
