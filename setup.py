@@ -19,8 +19,15 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "nbformat==5.0.6",
-        "IPython"
+      'nbdlang-jakekara==0.0.1',
+      'nbformat==5.0.7'
     ],
+    dependency_links=[
+        'git+ssh://git@github.com/jakekara/nbdl.git#egg=nbdlang-jakekara-0.0.1',
+    ],
+    # install_requires=[
+    #     'nbdlang @ git+ssh://git@github.com/jakekara/nbdmod'
+    #     # "nbdlang @ git+ssh://git@github.com/jakekara/nbdmod@6478e232b2c7bde1521c30e230f487b749d48633"
+    # ],
     python_requires='>=3.6',
 )

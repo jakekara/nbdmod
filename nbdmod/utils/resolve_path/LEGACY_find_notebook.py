@@ -1,5 +1,8 @@
 import os
 
+# This is unused legacy code based on the following example.
+# I am keeping it in this repo for testing purposes for a little while
+
 
 def find_notebook(fullname, path=None):
     """find a notebook, given its fully qualified name and an optional path
