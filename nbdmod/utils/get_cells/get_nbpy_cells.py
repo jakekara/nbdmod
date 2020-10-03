@@ -1,7 +1,7 @@
 from .FakeCell import FakeCell
 
 
-def get_cells_recursively(source_lines, cell_list=[]):
+def get_nbpy_cells_recursively(source_lines, cell_list=[]):
 
     if len(source_lines) < 1:
         return cell_list
@@ -23,14 +23,15 @@ def get_cells_recursively(source_lines, cell_list=[]):
     else:
         remaining_lines = []
 
-    return get_cells_recursively(remaining_lines, cell_list + [cell])
+    return get_nbpy_cells_recursively(remaining_lines, cell_list + [cell])
 
 
-def get_nbpy_cells(source):
+def get_cells(path):
 
     """
     Generate a cells array from a python file using vscode code cells
     """
+    source = open(path).read()
     lines = source.splitlines()
 
-    return get_cells_recursively(lines)
+    return get_nbpy_cells_recursively(lines)
