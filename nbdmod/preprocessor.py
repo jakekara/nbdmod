@@ -83,9 +83,6 @@ class Preprocessor:
         # If the first cell is a markdown cell, use it
         # as the module docstring
         if len(cells) > 0 and cells[0].cell_type == "markdown":
-            print(f"Setting docstring to { cells[0].source}")
-            # print (f"doc_string is{dir(module)}")
-            # module.__doc__ = cells[0].source
             self.module.__doc__ = cells[0].source
 
         for cell in cells:
