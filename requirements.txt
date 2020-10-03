@@ -1,4 +1,3 @@
-ipython==7.18.1
 pytest
 black
-lark
+-e git+git@github.com:jakekara/nbmod.git@6478e232b2c7bde1521c30e230f487b749d48633#egg=nbdmod
