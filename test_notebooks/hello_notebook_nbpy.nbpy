@@ -10,7 +10,7 @@
 # This extends the concept of a plain source file.
 
 # %%
-#: ignore-cell ::
+# :: ignore-cell ::
 # This code should not be executed
 should_not_export = 100
 
@@ -18,6 +18,6 @@ should_not_export = 100
 should_export = 200
 
 # %%
-#: ignore-cell ::
+# :: ignore-cell ::
 # This code should not be executed
 should_export = 500

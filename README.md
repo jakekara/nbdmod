@@ -30,7 +30,7 @@ In your notebook file, you can mark a cell so that it is not imported by the
 `import` statement.
 
 ```python
-#: ignore-cell ::
+# :: ignore-cell ::
 print("This code will not be executed when imported with nbmod")
 ```
 
@@ -40,7 +40,7 @@ past examples of tools that merely import an entire notebook as if it were a
 include code that isn't "re-usable," like generating charts, performing one-time
 computations on specific data sets.
 
-That `#:` signifies that the rest of the line is going to be written in a
+That `# ::` signifies that the rest of the line is going to be written in a
 special syntax called [nbdlang](https://github.com/jakekara/nbdl/), a related
 project for describing notebook code, which among other things can tell
 interpreters to ignore a code cell.
@@ -59,7 +59,7 @@ notebooks which don't make sense outside of the notebook context.
 Example:
 
 ```python
-#: ignore-cell ::
+# :: ignore-cell ::
 ```
 
 ### view: {view_name}
@@ -70,7 +70,7 @@ This executes a code's cell inside a dynamically defined module named
 Let's say this code was inside a notebook called "hhgtg.ipynb"...
 
 ```python
-#: view: module.philosophy
+# :: view: module.philosophy
 meaning_of_life = 42
 ```
 

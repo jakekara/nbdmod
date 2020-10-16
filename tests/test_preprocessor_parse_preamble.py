@@ -18,7 +18,7 @@ def test_invalid_preamble_raises():
     with pytest.raises(Exception):
         parse_preamble(
             """
-            #: ignore-cell
+            # :: ignore-cell
             """
         )
 
@@ -27,7 +27,7 @@ def test_valid_preamble_parses():
     assert (
         parse_preamble(
             """
-    #: ignore-cell ::
+    # :: ignore-cell ::
     """
         )
         == ["IGNORE_CELL", "END_BLOCK"]

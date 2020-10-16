@@ -11,7 +11,7 @@ import types
 def preamble(source: str):
 
     """
-    Return the all lines that begin with #: at the start of the code cell
+    Return the all lines that begin with # :: at the start of the code cell
     """
 
     ret = ""
@@ -21,9 +21,9 @@ def preamble(source: str):
         if len(line.strip()) < 1:
             continue
 
-        # we're done when we're past the #: lines
-        if line.strip().startswith("#:"):
-            ret += line.lstrip()[2:] + "\n"
+        # we're done when we're past the # :: lines
+        if line.strip().startswith("# ::"):
+            ret += line.lstrip()[4:] + "\n"
         # skip comments without breaking preamble
         elif line.lstrip().startswith("#"):
             continue

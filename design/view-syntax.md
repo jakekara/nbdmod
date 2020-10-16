@@ -3,7 +3,7 @@
 Create virtual submodules using the syntax:
 
 ```python
-#: view: module.{submodule-name} ::
+# :: view: module.{submodule-name} ::
 ```
 
 ## Status
@@ -15,14 +15,14 @@ Implemented, but see [considerations](#considerations) below.
 In a greetings.ipyb, we would have the following two cells:
 
 ```python
-#: view: module.nice ::
+# :: view: module.nice ::
 
 def say_hello(to="world"):
   print(f"Hello, {to}! Nice to see you.")
 ```
 
 ```python
-#: view: module.grumpy ::
+# :: view: module.grumpy ::
 
 def say_hello(to="world"):
 printf(f"Oh, uhh, hi {to}...")
