@@ -1,7 +1,8 @@
-# nbdmod
+# margo-loader
 
-Import notebooks in Python using nbdlang (notebook description language). (Not
-just Jupyter Notebooks, it also imports Python files that use "# %%" code cells)
+Import notebooks in Python using [Margo notebook margin
+syntax](https://github.com/jakekara/nbdl). Not just Jupyter Notebooks, it also
+imports Python files that use percent format (`# %%`) code cells)
 
 ## Install and develop
 
@@ -22,9 +23,7 @@ from nbdmod import nbloader
 import notebook
 ```
 
-That's it.
-
-## nbdlang, the not-so-secret sauce
+## Using margo to improve notebook portability
 
 In your notebook file, you can mark a cell so that it is not imported by the
 `import` statement.
