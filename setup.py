@@ -1,7 +1,15 @@
 import setuptools
+import os
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
+def read_requirements():
+    """Parse requirements from requirements.txt."""
+    reqs_path = os.path.join('.', 'install-requirements.txt')
+    with open(reqs_path, 'r') as f:
+        requirements = [line.rstrip() for line in f]
+    return requirements
 
 setuptools.setup(
     name="margo-loader", 
@@ -18,12 +26,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[
-      'margo-parser==0.0.1',
-      'nbformat==5.0.7'
-    ],
-    dependency_links=[
-        'git+ssh://git@github.com/jakekara/nbdl.git#egg=margo-parser-0.0.1',
-    ],
+    install_requires=read_requirements(),
     python_requires='>=3.6',
 )
