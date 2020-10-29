@@ -4,15 +4,13 @@ from nbdmod.preprocessor import parse_preamble
 
 
 def test_can_process_empty_preamble():
-    assert (
-        parse_preamble(
+    parsed = parse_preamble(
             """
         print('hello')
         """
-        )
-        == []
     )
 
+    assert parsed["BODY"] == []
 
 def test_invalid_preamble_raises():
     with pytest.raises(Exception):
@@ -24,11 +22,12 @@ def test_invalid_preamble_raises():
 
 
 def test_valid_preamble_parses():
-    assert (
-        parse_preamble(
-            """
+    parsed = parse_preamble("""
     # :: ignore-cell ::
     """
-        )
-        == ["IGNORE_CELL", "END_BLOCK"]
     )
+    assert type(parsed) == dict
+    assert parsed["BODY"][0]["TYPE"] == "BUILTIN"
+    assert parsed["BODY"][0]["BODY"]["NAME"] == "IGNORE_CELL"
+        
+

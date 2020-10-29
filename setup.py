@@ -4,11 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="nbdmod", 
+    name="margo-loader", 
     version="0.0.1",
     author="Jake Kara",
     author_email="jake@jakekara.com",
-    description="Prototype for notebook module system",
+    description="Import Jupyter notebooks using Margo notebook margin notebook syntax",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/jakekara/nbdmod",
@@ -19,11 +19,11 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-      'nbdlang-jakekara==0.0.1',
+      'margo-parser==0.0.1',
       'nbformat==5.0.7'
     ],
     dependency_links=[
-        'git+ssh://git@github.com/jakekara/nbdl.git#egg=nbdlang-jakekara-0.0.1',
+        'git+ssh://git@github.com/jakekara/nbdl.git#egg=margo-parser-0.0.1',
     ],
     python_requires='>=3.6',
 )

@@ -1,7 +1,7 @@
 """
     Process a notebook with nbdlang preamble
 """
-from notebook_description_language import parser
+from margo_parser import parser
 import json
 import re
 import sys
@@ -54,7 +54,7 @@ def remove_magics(source):
 def process_cell(cell):
 
     if cell.cell_type != "code":
-        return ([], "")
+        return (parse_preamble(""), "")
 
     try:
         preamble_instructions = parse_preamble(cell.source)
@@ -74,30 +74,49 @@ def process_cell(cell):
     return (preamble_instructions, remove_magics(cell.source))
 
 
-def get_views(preamble_instructions):
+def get_views(cell_preamble):
     ret = []
-    for instruction in preamble_instructions:
-        if not type(instruction) == tuple:
+    for statement in cell_preamble["BODY"]:
+        if statement["TYPE"] != "DECLARATION":
             continue
-        if not len(instruction) == 2:
+        if statement["NAME"] != "view":
             continue
-        if not instruction[0] == "view":
-            continue
-        # if not instruction[1][0].startswith("module."):
-        #     continue
-        for view_name in instruction[1]:
-            if not type(view_name) == str:
-                continue
-            matches = re.match(r"module.(?P<submodule_name>[a-zA-Z0-9_\.]*)", view_name)
-            if matches is None:
-                continue
-            submodule_name = matches.groupdict()["submodule_name"]
+        ret = ret + statement["VALUE"]
 
-            if not len(submodule_name) > 0:
-                continue
-
-            ret.append(submodule_name)
     return ret
+    # ret = []
+    # for instruction in cell_preamble:
+    #     if not type(instruction) == tuple:
+    #         continue
+    #     if not len(instruction) == 2:
+    #         continue
+    #     if not instruction[0] == "view":
+    #         continue
+    #     # if not instruction[1][0].startswith("module."):
+    #     #     continue
+    #     for view_name in instruction[1]:
+    #         if not type(view_name) == str:
+    #             continue
+    #         matches = re.match(r"module.(?P<submodule_name>[a-zA-Z0-9_\.]*)", view_name)
+    #         if matches is None:
+    #             continue
+    #         submodule_name = matches.groupdict()["submodule_name"]
+
+    #         if not len(submodule_name) > 0:
+    #             continue
+
+    #         ret.append(submodule_name)
+    # return ret
+
+
+def preamble_contains_ignore_cell(cell_preamble):
+    for statement in cell_preamble["BODY"]:
+        if (
+            statement["TYPE"] == "BUILTIN"
+            and statement["BODY"]["NAME"] == "IGNORE_CELL"
+        ):
+            return True
+    return False
 
 
 class Preprocessor:
@@ -118,7 +137,9 @@ class Preprocessor:
             cell_preamble, cell_source = process_cell(cell)
 
             # ignore-cell support
-            if "IGNORE_CELL" in cell_preamble:
+            # if "IGNORE_CELL" in cell_preamble:
+            #     continue
+            if preamble_contains_ignore_cell(cell_preamble):
                 continue
 
             # view: module.view_name support ::
@@ -128,6 +149,7 @@ class Preprocessor:
 
                 if full_view_name in sys.modules:
                     mod = sys.modules[full_view_name]
+
                 else:
                     mod = types.ModuleType(full_view_name)
                     sys.modules[full_view_name] = mod
