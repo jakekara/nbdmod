@@ -1,5 +1,5 @@
 def test_can_load():
-    from nbdmod import nbloader
+    from margo_loader import nbloader
 
 
 def test_imports_cells():

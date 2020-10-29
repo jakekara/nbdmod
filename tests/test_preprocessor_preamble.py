@@ -1,4 +1,4 @@
-from nbdmod.preprocessor import preamble
+from margo_loader.preprocessor import preamble
 
 
 def test_processes_empty_soure():

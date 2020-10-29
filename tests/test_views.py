@@ -1,4 +1,4 @@
-import nbdmod
+import margo_loader
 
 
 def test_imports_both_views():

@@ -1,6 +1,6 @@
 import pytest
 
-from nbdmod.preprocessor import parse_preamble
+from margo_loader.preprocessor import parse_preamble
 
 
 def test_can_process_empty_preamble():

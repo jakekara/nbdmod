@@ -1,5 +1,5 @@
-from nbdmod.utils.resolve_path import resolve_path
-from nbdmod.utils.resolve_path.LEGACY_find_notebook import find_notebook
+from margo_loader.utils.resolve_path import resolve_path
+from margo_loader.utils.resolve_path.LEGACY_find_notebook import find_notebook
 
 
 def test_does_not_find_nonexistent_file():

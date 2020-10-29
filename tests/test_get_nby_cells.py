@@ -1,4 +1,4 @@
-from nbdmod.utils.get_cells.get_nbpy_cells import get_cells
+from margo_loader.utils.get_cells.get_nbpy_cells import get_cells
 
 
 def test_gets_cells():
