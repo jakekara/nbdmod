@@ -1,2 +1,2 @@
-margo-parser @ git+ssh://git@github.com/jakekara/nbdl.git@main#egg=margo-parser-0.0.1
+margo-parser @ git+https://github.com/jakekara/nbdl.git@main#egg=margo-parser-0.0.1
 nbformat==5.0.7
