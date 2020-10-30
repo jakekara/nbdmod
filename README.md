@@ -16,7 +16,7 @@ pip install git+https://github.com/jakekara/nbmod
 Assuming you have a file called "notebook.ipynb" somewhere in your import path:
 
 ```python
-from nbdmod import nbloader
+import margo_loader
 import notebook
 ```
 
