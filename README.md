@@ -42,22 +42,22 @@ That `# ::` signifies that the rest of the line is going to be written in a
 special syntax called margo syntax. The syntax is very lightweight, it's meant
 to be extended by projects like nbdmod. The Python reference interpreter is maintained in a separate repostitory [here](https://github.com/jakekara/nbdl/).
 
-## view: vreating virtual submodules
+## view: creating virtual submodules
 
 Another feature of margo-loader is that you can create virtual submodules within
 a notebook. This in effect allows you to import different groups of cells from
-the same notebook. Here's an example borrowed from the file
+the same notebook. Here's an example of a few cells borrowed from the file
 `test_notebooks/greetings.ipynb` in this repo.
 
 ```python
-# greetings.ipynb cell 1
+# greetings.ipynb
 # :: view: "grumpy" ::
 def say_hello(to="world"):
     return f"Oh, uhh, hi {to}..."
 ```
 
 ```python
-# greetings.ipynb cell 2
+# greetings.ipynb
 # :: view: "nice" ::
 def say_hello(to="world"):
   return f"Hello, {to}! Nice to see you."
@@ -68,11 +68,13 @@ were imported, the second `say_hello` would overwrite the first. However, we can
 import either of these submodule views using Python's standard import syntax once we import `margo_loader`.
 
 ```python
-from greetings import nice, grumpy
-nice.say_hello()
->>> "Hello, world! Nice to see you."
-grumpy.say_hello()
->>> "Oh, uhh, hi world..."
+>>> import margo_loader
+>>> from test_notebooks.greetings import nice, grumpy
+>>> nice.say_hello()
+'Hello, world! Nice to see you.'
+>>> grumpy.say_hello()
+'Oh, uhh, hi world...'
+>>>
 ```
 
 This allows for multiple "views" of the same source code module, as defined in
