@@ -42,7 +42,7 @@ That `# ::` signifies that the rest of the line is going to be written in a
 special syntax called margo syntax. The syntax is very lightweight, it's meant
 to be extended by projects like nbdmod. The Python reference interpreter is maintained in a separate repostitory [here](https://github.com/jakekara/nbdl/).
 
-## view: Creating virtual submodules
+## view: vreating virtual submodules
 
 Another feature of margo-loader is that you can create virtual submodules within
 a notebook. This in effect allows you to import different groups of cells from
@@ -132,7 +132,7 @@ $ python -m margo_loader.cli extract -i test_notebooks/requirements.ipynb -f raw
 ...
 ```
 
-## Working with "# %%" code cells
+## Working with # %% code cells
 
 This library works with Jupyter Notebooks (.ipynb files) as well as python files
 with vscode code cells using the file extension `.pynb`. These are plain source
