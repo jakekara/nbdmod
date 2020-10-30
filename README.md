@@ -1,7 +1,7 @@
 # margo-loader
 
-Import notebooks in Python using [Margo notebook margin
-syntax](https://github.com/jakekara/nbdl).
+> Import notebooks in Python using [Margo notebook margin
+> syntax](https://github.com/jakekara/nbdl).
 
 ## Installation
 
@@ -106,8 +106,8 @@ You can specify the format like so:
 # :: {variable_name} [{format}]: {string}
 ```
 
-The `test_notebooks/requirements.ipynb` file in this repository demonstrates why
-you might want to use raw variable declarations. In that notebook, we have code like this
+The `test_notebooks/requirements.ipynb` file in this repository demonstrates how
+you can use plain text to store a notebooks dependencies:
 
 ```python
 # :: requirements.txt [raw]: '
@@ -122,13 +122,12 @@ and includes a list of Python packages (well fake ones). The idea is that you
 can define a notebook's dependencies right at the top, or dispersed throughout
 the notebook. But what good is this? We need a tool to be able to extract this information to a plain requirements.txt file. Fortunately margo-loader provides a CLI tool for that
 
-```python
+```bash
 $ python -m margo_loader.cli extract -i test_notebooks/requirements.ipynb -f raw -p requirements.txt
 
  dep
  dep-a b c
  dep 3
-
 ...
 ```
 
