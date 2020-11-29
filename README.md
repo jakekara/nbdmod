@@ -1,103 +1,154 @@
-# Margo note syntax
+# margo-loader
 
-# What is Margo?
+> Import notebooks in Python using [Margo notebook margin
+> syntax](https://github.com/jakekara/nbdl).
 
-Margo is a syntax for adding features to computational notebook within code comments. For example, when using notebooks as source code modules, we need a simple way to ignore cells we do not want exported from the notebook. In a Python code cell, this might look like:
+## Installation
+
+To install margo-loader, run:
+
+```bash
+pip install git+https://github.com/jakekara/nbmod
+```
+
+## Importing a notebook
+
+Assuming you have a file called "notebook.ipynb" somewhere in your import path:
+
+```python
+import margo_loader
+import notebook
+```
+
+## Using margo to improve notebook portability
+
+In your notebook file, you can mark a cell so that it is not imported by the
+`import` statement.
 
 ```python
 # :: ignore-cell ::
-
-print("This cell will not be exported by any code that imports this notebook.")
+print("This code will not be executed when imported with margo-loader")
 ```
 
-This statement is called a "note" in Margo. It is composed of the following parts:
+This little bit of syntax makes this library much different and more useful than
+past examples of tools that merely import an entire notebook as if it were a
+`.py` file. Because of their interactive nature, Notebooks may contain code that
+doesn't make sense to import elsewhere, and that's what the `ignore-cell`
+statement addresses.
 
-`# ::` - **The Margo note prefix** differentiates this from a standard Python comment. This prefix is not part of the Margo syntax. It will vary from programming language to programming language, and it is up to the application that extracts Margo code to define how Margo notes are formatted. This double-colon syntax is the recommend method for prefixing Margo notes in Python. In TypeScript, it might look like `// ::`
+## A note about the comment syntax
 
-`ignore-cell` - **The Margo note statement** is the substance of the Margo note. This statement might be understood by an application to not do anything with the cell. However, this specific statement is just an example. The Margo syntax does not reserve any keywords. It is up to application developers to do this for their own applications. For features where there is shared understanding of meaning, the developer community should reach a consensus about reserving keywords.
+That `# ::` signifies that the rest of the line is going to be written in a
+special syntax called margo syntax. The syntax is very lightweight, it's meant
+to be extended by projects like nbdmod. The Python reference interpreter is maintained in a separate repostitory [here](https://github.com/jakekara/nbdl/).
 
-`::` - **The Margo endblock,** like the semicolon in C, signifies the end of a statement and it is required.
+## view: creating virtual submodules
 
-# Two types of statements
-
-Statements fall into two categories: directives, and declarations.
-
-## Directives
-
-Directives are statements that have one fixed semantic meaning, such as `ignore-cell` in the example above. The keyword and its meaning are up to the application developer.
-
-## Declarations
-
-Declarations assign values to keywords, and they can be formatted a number of ways. Here is a basic example.
+Another feature of margo-loader is that you can create virtual submodules within
+a notebook. This in effect allows you to import different groups of cells from
+the same notebook. Here's an example of a few cells borrowed from the file
+`test_notebooks/greetings.ipynb` in this repo.
 
 ```python
-# :: cell-id : "define-add-function" ::
-
-def add(a, b):
-    return a + b
+# greetings.ipynb
+# :: view: "grumpy" ::
+def say_hello(to="world"):
+    return f"Oh, uhh, hi {to}..."
 ```
-
-The Margo note at the top of the above example cell declares the value of `cell-id` to be equal to `["define-add-function"]`. Note that this is an array of length 1, not a string.
-
-We can generally describe the declaration syntax as:
-
-`# :: NAME [ FORMAT ]: {VALUE}`
-
-The **name** may contain alphanumeric characters as well as underscore and dash characters.
-
-The **value** may be formatted several ways. The example above is called **Margo Value Format,** but values may also be defined as valid JSON or YAML strings as well.
-
-The optional **format** specifier is not required in the example above. When absent, Margo Value Format is assumed. It can be set to `json` or `yaml` or `raw`.
-
-### Margo Value Format
-
-Margo Value Format values are JSON arrays without the encapsulating square brackets `[` `]`. They may contain JSON scalar values: string, number, true, false and null. They may not contain collections (arrays or objects).
-
-### J**SON and YAML formats**
-
-More complex structured data may be passed as JSON or YAML by using the format specifier. Other formats may be added in the future.
-
-Let's imagine we want to use a notebook as a task in a data processing workflow, and we need to know what external files it requires as inputs, and what files it will generate.
 
 ```python
-# :: notebook.task_interface [json]: '{
-# :: "inputs": [
-# ::    "populations.csv",
-# ::    "virus-totals.csv"
-# :: ],
-# :: "outputs": [
-# ::    "cases-per-capita.csv"
-# :: ]}' ::
+# greetings.ipynb
+# :: view: "nice" ::
+def say_hello(to="world"):
+  return f"Hello, {to}! Nice to see you."
 ```
 
-The same example in YAML would look like:
+Notice we define the same `say_hello` function twice. If the entire notebook
+were imported, the second `say_hello` would overwrite the first. However, we can
+import either of these submodule views using Python's standard import syntax once we import `margo_loader`.
 
 ```python
-# :: notebook.task_interface [yaml]:
-# ::   inputs:
-# ::     - populations.csv
-# ::     - virust-totals.csv
-# ::   outputs:
-# ::     - cases-per-capita.csv
+>>> import margo_loader
+>>> from test_notebooks.greetings import nice, grumpy
+>>> nice.say_hello()
+'Hello, world! Nice to see you.'
+>>> grumpy.say_hello()
+'Oh, uhh, hi world...'
+>>>
 ```
 
-A more compact approach might be to stick to the Margo Value Format, making use of the fact that dots are allowed in the declaration name:
+This allows for multiple "views" of the same source code module, as defined in
+[Calliss 1991, A comparison of module constructs in programming
+languages](https://dl.acm.org/doi/10.1145/122203.122206)
+
+## The view statement is a reserved declaration name
+
+The `view` statement is not actually built into margo syntax. You won't find it
+in the margo-parser code. Margo syntax allows users to declare variables with
+any name with the following syntax:
 
 ```python
-# :: notebook.task_interface.inputs = "population.csv", "virus-totals.csv" ::
-# :: notebook.task_interface.outputs = "cases-per-capita.csv" ::
+# :: {variable name}: {list of values} ::
 ```
 
-### Raw (plain text) format
+This project, margo-loader, reserves the `view` name to add the functionality
+described above. For this reason we consider it a reserved keyword, but it is a
+loose definition. Other tools may make use of margo-parser but have no use for
+the `view` keyword and not treat it differently from any other named value.
 
-Finally, unstructured data may be provided as a string. Let's envision a case where we want to specify all of the software dependencies for a notebook:
+## Specially formatted declarations
+
+The `view` syntax above accepts a list of strings that are view names. Margo
+syntax allows for declarations to be provided as valid JSON, YAML or plain text
+strings as well.
+
+You can specify the format like so:
+
+```python
+# :: {variable_name} [{format}]: {string}
+```
+
+The `test_notebooks/requirements.ipynb` file in this repository demonstrates how
+you can use plain text to store a notebooks dependencies:
 
 ```python
 # :: requirements.txt [raw]: '
-# :: requests==2.2.5
-# :: beautifulsoup4==4.9.3
-# :: nltk==3.5
+# :: dep
+# :: dep-a b c
+# :: dep 3
 # :: ' ::
 ```
 
-Note that no special characters are required to add line breaks to strings in Margo notes.
+This declares a variable named `requirements.txt` in the raw (plain) text format
+and includes a list of Python packages (well fake ones). The idea is that you
+can define a notebook's dependencies right at the top, or dispersed throughout
+the notebook. But what good is this? We need a tool to be able to extract this information to a plain requirements.txt file. Fortunately margo-loader provides a CLI tool for that
+
+```bash
+$ python -m margo_loader.cli extract -i test_notebooks/requirements.ipynb -f raw -p requirements.txt
+
+ dep
+ dep-a b c
+ dep 3
+...
+```
+
+## Working with # %% code cells
+
+This library works with Jupyter Notebooks (.ipynb files) as well as python files
+with vscode code cells using the file extension `.pynb`. These are plain source
+Python files that use "# %%" to split the document into cells. [Read more
+here](https://code.visualstudio.com/docs/python/jupyter-support-py).
+
+Look at `test_notebooks/hello_notebook_pynb.pynb` in this repo for an example of
+a code-cell notebook.
+
+## Prior art
+
+This project borrows code and implementation approach from [a Jupyter Notebook
+documentation
+example](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html)
+that imports notebooks in their entirety as if they were `.py` files. As
+described above, my project aims to build upon this with the addition of margo
+syntax for preprocessing. I believe these enhancements address the reason that
+example has largely been abandoned.
