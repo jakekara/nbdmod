@@ -2,7 +2,7 @@ import sys
 import types
 
 from .utils.resolve_path import resolve_multiple_extensions
-from .preprocessor import Preprocessor
+from .processor import Processor
 from .utils.get_cells.get_cells import get_cells
 
 
@@ -31,7 +31,7 @@ class NotebookLoader(object):
 
         cells = get_cells(path)
         try:
-            processor = Preprocessor(mod, fullname)
+            processor = Processor(mod, fullname)
             processor.process_cells(cells)
         except Exception as e:
             raise Exception("Failed to process cells: " + str(e))

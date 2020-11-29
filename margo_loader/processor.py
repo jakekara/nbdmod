@@ -1,6 +1,4 @@
-"""
-    Process a notebook with nbdlang preamble
-"""
+"""Process a notebook with margo preamble"""
 from margo_parser.api.get_preamble_block import get_preamble_block
 from margo_parser.api.MargoBlock import MargoBlock
 from margo_parser.api.MargoStatement import MargoStatementTypes
@@ -22,6 +20,7 @@ def remove_magics(source: str) -> str:
 
 
 def get_views(cell_preamble: MargoBlock):
+    """Get the submodules this cell belongs to"""
     ret = []
     for statement in cell_preamble.statements:
         if statement.type != MargoStatementTypes.DECLARATION:
@@ -34,6 +33,8 @@ def get_views(cell_preamble: MargoBlock):
 
 
 def preamble_contains_ignore_cell(cell_preamble: MargoBlock):
+    """Determine if a cell contains ignore-cell margo directive"""
+
     for statement in cell_preamble.statements:
         if (
             statement.type == MargoStatementTypes.DIRECTIVE
@@ -43,13 +44,21 @@ def preamble_contains_ignore_cell(cell_preamble: MargoBlock):
     return False
 
 
-class Preprocessor:
+class Processor:
     def __init__(self, module, name):
         self.module = module
         self.name = name
 
     def process_cells(self, cells):
+        """Parse preambles and execute code cells of a notebook accordingly
+        Currently supports:
+        # :: ignore-cell :: to skip this cell
+        # :: submodule: 'submodule_name' :: to create a virtual submodule in
+        which this cell's code will be executed and can later be imported with
+        from notebook.submodule_name import stuff_you_defined
 
+        If first cell is markdown, it will be used as the module's docstring
+        """
         idx = -1
         for cell in cells:
             idx += 1
@@ -58,7 +67,7 @@ class Preprocessor:
             if idx == 0 and cell.cell_type == "markdown":
                 self.module.__doc__ = cell.source
 
-            cell_preamble = get_preamble_block(cell.source)
+            cell_preamble = get_preamble_block(cell.source, cell_type=cell.cell_type)
             cell_source = remove_magics(cell.source)
 
             # ignore-cell support
@@ -76,7 +85,7 @@ class Preprocessor:
                 else:
                     mod = types.ModuleType(full_view_name)
                     sys.modules[full_view_name] = mod
-
+                # Execute the code code within the given view name
                 exec(cell_source, mod.__dict__)
                 # TODO - This version does not do it, but I should
                 # probably execute every cell in a view. Cells

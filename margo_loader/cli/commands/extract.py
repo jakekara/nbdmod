@@ -3,7 +3,7 @@ from nbformat import read
 from margo_parser import parser
 import json
 
-from margo_loader.preprocessor import preamble
+from margo_loader.processor import preamble
 
 
 def register(subparsers: ArgumentParser):
