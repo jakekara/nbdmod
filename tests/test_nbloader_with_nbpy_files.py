@@ -5,7 +5,7 @@ def test_nbdmod_can_load():
 def test_nbdmod_imports_cells():
     from test_notebooks import hello_notebook_nbpy as hello_notebook
 
-    # assert hello_notebook.should_export == 200
+    assert hello_notebook.should_export == 200
 
 
 def test_nbdmod_imports_single_variables():
