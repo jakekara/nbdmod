@@ -1,7 +1,7 @@
 # margo-loader
 
-> Import notebooks in Python using [Margo notebook margin
-> syntax](https://github.com/jakekara/nbdl).
+> Import computational Jupyter Notebooks notebooks as Python modules, with
+> support for Margo syntax.
 
 ## Installation
 
@@ -20,52 +20,53 @@ import margo_loader
 import notebook
 ```
 
-## Using margo to improve notebook portability
+## Why this approach is different
 
-In your notebook file, you can mark a cell so that it is not imported by the
-`import` statement.
+Previous attempts have been made to make notebooks importable like normal Python
+source files. While these attempts work just fine, they do not account for a
+non-technical problem: Notebook code is written differently from modular code,
+so it often includes a lot of code you don't want to run when you import it
+outside of the original notebook context.
+
+This loader works largely the same as those past projects, but it adds support
+for Margo, a lightweight syntax for annotating notebooks with extra information.
+
+If you want to prevent a cell from being exported, start your cell with the specially-formatted comment line `# :: ignore-cell ::`, like this:
 
 ```python
 # :: ignore-cell ::
 print("This code will not be executed when imported with margo-loader")
 ```
 
-This little bit of syntax makes this library much different and more useful than
-past examples of tools that merely import an entire notebook as if it were a
-`.py` file. Because of their interactive nature, Notebooks may contain code that
-doesn't make sense to import elsewhere, and that's what the `ignore-cell`
-statement addresses.
+This special code comment is called a Margo note. Margo notes in Python cells begin with `# ::` to differentiate them from regular comments, and end with `::`.
 
-## A note about the comment syntax
+Learn more about the underlying Margo syntax [here](https://github.com/jakekara/nbdl/).
 
-That `# ::` signifies that the rest of the line is going to be written in a
-special syntax called margo syntax. The syntax is very lightweight, it's meant
-to be extended by projects like nbdmod. The Python reference interpreter is maintained in a separate repostitory [here](https://github.com/jakekara/nbdl/).
-
-## view: creating virtual submodules
+## Creating virtual submodules
 
 Another feature of margo-loader is that you can create virtual submodules within
-a notebook. This in effect allows you to import different groups of cells from
-the same notebook. Here's an example of a few cells borrowed from the file
+a notebook. This in effect allows you to group cells from the same notebook.
+Here's an example of a few cells from the file
 `test_notebooks/greetings.ipynb` in this repo.
 
 ```python
 # greetings.ipynb
-# :: view: "grumpy" ::
+# :: submodule: "grumpy" ::
 def say_hello(to="world"):
     return f"Oh, uhh, hi {to}..."
 ```
 
 ```python
 # greetings.ipynb
-# :: view: "nice" ::
+# :: submodule: "nice" ::
 def say_hello(to="world"):
   return f"Hello, {to}! Nice to see you."
 ```
 
 Notice we define the same `say_hello` function twice. If the entire notebook
 were imported, the second `say_hello` would overwrite the first. However, we can
-import either of these submodule views using Python's standard import syntax once we import `margo_loader`.
+import either of these submodules using Python's standard import syntax once we
+import `margo_loader`.
 
 ```python
 >>> import margo_loader
@@ -77,71 +78,21 @@ import either of these submodule views using Python's standard import syntax onc
 >>>
 ```
 
-This allows for multiple "views" of the same source code module, as defined in
-[Calliss 1991, A comparison of module constructs in programming
-languages](https://dl.acm.org/doi/10.1145/122203.122206)
+The concept of programming with multiple views of the same source code is
+articulated well in [Calliss 1991, A comparison of module constructs in
+programming languages](https://dl.acm.org/doi/10.1145/122203.122206)
 
-## The view statement is a reserved declaration name
-
-The `view` statement is not actually built into margo syntax. You won't find it
-in the margo-parser code. Margo syntax allows users to declare variables with
-any name with the following syntax:
-
-```python
-# :: {variable name}: {list of values} ::
-```
-
-This project, margo-loader, reserves the `view` name to add the functionality
-described above. For this reason we consider it a reserved keyword, but it is a
-loose definition. Other tools may make use of margo-parser but have no use for
-the `view` keyword and not treat it differently from any other named value.
-
-## Specially formatted declarations
-
-The `view` syntax above accepts a list of strings that are view names. Margo
-syntax allows for declarations to be provided as valid JSON, YAML or plain text
-strings as well.
-
-You can specify the format like so:
-
-```python
-# :: {variable_name} [{format}]: {string}
-```
-
-The `test_notebooks/requirements.ipynb` file in this repository demonstrates how
-you can use plain text to store a notebooks dependencies:
-
-```python
-# :: requirements.txt [raw]: '
-# :: dep
-# :: dep-a b c
-# :: dep 3
-# :: ' ::
-```
-
-This declares a variable named `requirements.txt` in the raw (plain) text format
-and includes a list of Python packages (well fake ones). The idea is that you
-can define a notebook's dependencies right at the top, or dispersed throughout
-the notebook. But what good is this? We need a tool to be able to extract this information to a plain requirements.txt file. Fortunately margo-loader provides a CLI tool for that
-
-```bash
-$ python -m margo_loader.cli extract -i test_notebooks/requirements.ipynb -f raw -p requirements.txt
-
- dep
- dep-a b c
- dep 3
-...
-```
-
-## Working with # %% code cells
+## Working with percent-formatted notebooks
 
 This library works with Jupyter Notebooks (.ipynb files) as well as python files
-with vscode code cells using the file extension `.pynb`. These are plain source
-Python files that use "# %%" to split the document into cells. [Read more
+with percent cell formatting using the file extension `.pynb`. These are plain
+source Python files that use `# %%` to split the document into cells. [Read more
 here](https://code.visualstudio.com/docs/python/jupyter-support-py).
 
 Look at `test_notebooks/hello_notebook_pynb.pynb` in this repo for an example of
 a code-cell notebook.
+
+**STABILITY NOTE: This is an alpha feature. The .pynb extension may be changed in a future version**
 
 ## Prior art
 
