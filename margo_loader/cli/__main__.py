@@ -1,5 +1,4 @@
 import argparse
-from margo_parser import parser
 from .commands import extract
 
 

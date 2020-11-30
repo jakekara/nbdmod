@@ -21,6 +21,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/jakekara/nbdmod",
     packages=setuptools.find_packages(),
+        entry_points = {
+        'console_scripts': ['margo-extract=margo_loader.cli.__main__:main'],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

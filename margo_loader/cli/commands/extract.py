@@ -1,9 +1,11 @@
 from argparse import ArgumentParser
 from nbformat import read
-from margo_parser import parser
+from margo_parser.api import (
+    MargoMarkdownPreambleBlock,
+    MargoPythonCellPreambleBlock,
+    MargoStatementTypes,
+)
 import json
-
-from margo_loader.processor import preamble
 
 
 def register(subparsers: ArgumentParser):
@@ -42,17 +44,16 @@ def main(args):
             declarations[name] += val
 
     for c in nb.cells:
-        if c["cell_type"] == "code":
-            clean_code = preamble(c["source"])
-            parsed = parser.parse(clean_code)
-            for statement in parsed["BODY"]:
-                if statement["TYPE"] != "DECLARATION":
-                    continue
-                var_name = statement["NAME"]
-                var_val = statement["VALUE"]
-                if args.property and not args.property == var_name:
-                    continue
-                add_to_declaration(var_name, var_val)
+        if c["cell_type"] == "markdown":
+            block = MargoMarkdownPreambleBlock(c["source"])
+        elif c["cell_type"] == "code":
+            block = MargoPythonCellPreambleBlock(c["source"])
+        else:
+            continue
+        for statement in block.statements:
+            if statement.type != MargoStatementTypes.DECLARATION:
+                continue
+            add_to_declaration(statement.name, statement.value)
 
     def print_report():
         if args.property and args.property not in declarations:
