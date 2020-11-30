@@ -8,8 +8,6 @@ import sys
 import types
 
 
-
-
 def remove_magics(source: str) -> str:
     """Remove magics from source for execution outside of Jupyter"""
 
