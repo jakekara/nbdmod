@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from nbformat import read
 from margo_parser.api import (
-    MargoMarkdownPreambleBlock,
+    MargoMarkdownCellPreambleBlock,
     MargoPythonCellPreambleBlock,
     MargoStatementTypes,
 )
@@ -45,7 +45,7 @@ def main(args):
 
     for c in nb.cells:
         if c["cell_type"] == "markdown":
-            block = MargoMarkdownPreambleBlock(c["source"])
+            block = MargoMarkdownCellPreambleBlock(c["source"])
         elif c["cell_type"] == "code":
             block = MargoPythonCellPreambleBlock(c["source"])
         else:

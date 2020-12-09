@@ -1,7 +1,7 @@
 """Process a notebook with margo preamble"""
 from margo_parser.api import (
     MargoBlock,
-    MargoMarkdownPreambleBlock,
+    MargoMarkdownCellPreambleBlock,
     MargoPythonCellPreambleBlock,
     MargoStatementTypes,
 )
@@ -72,7 +72,7 @@ class Processor:
 
             # cell_preamble = get_preamble_block(cell.source, cell_type=cell.cell_type)
             if cell.cell_type == "markdown":
-                cell_preamble = MargoMarkdownPreambleBlock(cell.source)
+                cell_preamble = MargoMarkdownCellPreambleBlock(cell.source)
             else:
                 cell_preamble = MargoPythonCellPreambleBlock(cell.source)
             cell_source = remove_magics(cell.source)
