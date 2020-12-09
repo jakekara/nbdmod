@@ -1,2 +1,2 @@
-margo-parser @ git+https://github.com/jakekara/nbdl.git@main#egg=margo-parser-0.0.1
+margo-parser @ git+https://github.com/margo-notebooks/margo-parser-py@ac68524293bd1362828d2be132ab85920a4be8bb#egg-info=margo-parser-0.0.2a0
 nbformat==5.0.7
