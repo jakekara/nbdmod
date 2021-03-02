@@ -4,6 +4,7 @@ from margo_parser.api import (
     MargoMarkdownCellPreambleBlock,
     MargoPythonCellPreambleBlock,
     MargoStatementTypes,
+    MargoDirective,
 )
 import json
 import re
@@ -39,11 +40,40 @@ def preamble_contains_ignore_cell(cell_preamble: MargoBlock):
     """Determine if a cell contains ignore-cell margo directive"""
 
     for statement in cell_preamble.statements:
-        if (
-            statement.type == MargoStatementTypes.DIRECTIVE
-            and statement.name == "ignore-cell"
-        ):
+        if statement.type == MargoStatementTypes.DIRECTIVE and statement.name in [
+            "ignore-cell",
+            "skip",
+        ]:
             return True
+    return False
+
+
+def preamble_contains_stop_module(cell_preamble: MargoBlock):
+    """Determine if a cell contains a stop-module subcommand"""
+
+    for statement in cell_preamble.statements:
+        if not isinstance(statement, MargoDirective):
+            continue
+        if statement.name in [
+            "stop-module",
+            "stop",
+        ]:
+            return True
+
+    return False
+
+
+def preamble_contains_start_module(cell_preamble: MargoBlock):
+    """Determine if a cell contains a start-module subcommand"""
+    for statement in cell_preamble.statements:
+        if not isinstance(statement, MargoDirective):
+            continue
+        if statement.name in [
+            "start-module",
+            "start",
+        ]:
+            return True
+
     return False
 
 
@@ -63,6 +93,13 @@ class Processor:
         If first cell is markdown, it will be used as the module's docstring
         """
         idx = -1
+        exec_enabled = True
+
+        def exec_wrapper(code, context):
+            if not exec_enabled:
+                return
+            exec(code, context)
+
         for cell in cells:
             idx += 1
             # If the first cell is a markdown cell, use it
@@ -81,6 +118,12 @@ class Processor:
             if preamble_contains_ignore_cell(cell_preamble):
                 continue
 
+            if preamble_contains_stop_module(cell_preamble):
+                exec_enabled = False
+
+            if preamble_contains_start_module(cell_preamble):
+                exec_enabled = True
+
             # view: module.view_name support ::
             views = get_views(cell_preamble)
             for view in views:
@@ -93,7 +136,7 @@ class Processor:
                     mod = types.ModuleType(full_view_name)
                     sys.modules[full_view_name] = mod
                 # Execute the code code within the given view name
-                exec(cell_source, mod.__dict__)
+                exec_wrapper(cell_source, mod.__dict__)
                 # TODO - This version does not do it, but I should
                 # probably execute every cell in a view. Cells
                 # without a view specified should run in a default
@@ -102,4 +145,4 @@ class Processor:
                 self.module.__dict__[view] = mod
 
             if cell.cell_type == "code":
-                exec(cell_source, self.module.__dict__)
+                exec_wrapper(cell_source, self.module.__dict__)
