@@ -35,27 +35,28 @@ def get_views(cell_preamble: MargoBlock):
 
     return ret
 
-def preamble_contains_directive(cell_preamble:MargoBlock, directive_list):
+
+def preamble_contains_directive(cell_preamble: MargoBlock, directive_list):
     for statement in cell_preamble.statements:
-        if statement.type == MargoStatementTypes.DIRECTIVE and statement.name in directive_list:
+        if (
+            statement.type == MargoStatementTypes.DIRECTIVE
+            and statement.name in directive_list
+        ):
             return True
     return False
+
 
 def preamble_contains_ignore_cell(cell_preamble: MargoBlock):
     """Determine if a cell contains ignore-cell margo directive"""
 
-    return preamble_contains_directive(cell_preamble, [
-            "ignore-cell",
-            "skip"
-        ])
+    return preamble_contains_directive(cell_preamble, ["ignore-cell", "skip"])
+
 
 def preamble_contains_stop_module(cell_preamble: MargoBlock):
     """Determine if a cell contains a stop-module subcommand"""
 
-    return preamble_contains_directive(cell_preamble, [
-            "stop-module",
-            "stop"
-    ])
+    return preamble_contains_directive(cell_preamble, ["stop-module", "stop"])
+
 
 def preamble_contains_start_module(cell_preamble: MargoBlock):
     """Determine if a cell contains a start-module subcommand"""
@@ -64,18 +65,16 @@ def preamble_contains_start_module(cell_preamble: MargoBlock):
         [
             "start-module",
             "start",
-        ])
+        ],
+    )
+
 
 def preamble_contains_not_a_module(cell_preamble: MargoBlock):
-    """ Determine if a notebook declares that it is not to be imported 
-    by using the 'not-a-module' directive""" 
+    """Determine if a notebook declares that it is not to be imported
+    by using the 'not-a-module' directive"""
 
-    return preamble_contains_directive(
-        cell_preamble,
-        [
-            "not-a-module",
-            "do-not-import"
-        ])
+    return preamble_contains_directive(cell_preamble, ["not-a-module", "do-not-import"])
+
 
 def get_preamble(cell):
     if cell.cell_type == "markdown":
@@ -83,17 +82,13 @@ def get_preamble(cell):
     else:
         cell_preamble = MargoPythonCellPreambleBlock(cell.source)
 
-    return {
-        "cell": cell,
-        "preamble": cell_preamble
-    }
+    return {"cell": cell, "preamble": cell_preamble}
+
 
 class Processor:
     def __init__(self, module, name):
         self.module = module
         self.name = name
-
-
 
     def process_cells(self, cells):
         """Parse preambles and execute code cells of a notebook accordingly
@@ -111,7 +106,9 @@ class Processor:
         margo_cells = [get_preamble(c) for c in cells]
         for margo_cell in margo_cells:
             if preamble_contains_not_a_module(margo_cell["preamble"]):
-                raise Exception("Cannot import: This notebook declares that it is not a module.")
+                raise Exception(
+                    "Cannot import: This notebook declares that it is not a module."
+                )
 
         def exec_wrapper(code, context):
             if not exec_enabled:
@@ -138,7 +135,7 @@ class Processor:
             # ignore-cell support
             if preamble_contains_ignore_cell(cell_preamble):
                 continue
-            
+
             # stop-module support
             if preamble_contains_stop_module(cell_preamble):
                 exec_enabled = False
