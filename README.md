@@ -1,10 +1,14 @@
 # margo-loader
 
-> Import computational Jupyter Notebooks notebooks as Python modules
+> Import Jupyter Notebooks notebooks as Python modules
 
-## Demo Notebook  
+## Demo Notebooks  
 
 Want to see Margo Loader in action before installing it? Here's a live [demo notebook](https://colab.research.google.com/drive/1X1vuPRrj7SOpGl71wFCwFNgX40W18Kyl#scrollTo=WyrdS8A06eA6) on Google Colaboratory.
+
+A more realistic suite of notebooks for background deletion and color extraction on William Blake prints is available in this [Binder](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/) VM, which runs in a browser without installation.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/)
 
 ## Installation
 
@@ -16,7 +20,7 @@ pip install git+https://github.com/margo-notebooks/margo-loader-py
 
 ## Importing a notebook
 
-Assuming you have a file called "notebook.ipynb" somewhere in your import path:
+Assuming you have a file called "notebook.ipynb":
 
 ```python
 import margo_loader
