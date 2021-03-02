@@ -23,13 +23,16 @@ def resolve_path(fullname, *, path=None, ext="nbpy"):
     # named {element}/{leaf_name}.{ext}. return
     # the first hit.
     for try_dir in path:
-        try_path = os.path.join(try_dir, f"{leaf_name}.{ext}")
+        fname = f"{leaf_name}.{ext}"
+        try_path = os.path.join(try_dir, fname)
 
         if os.path.exists(try_path):
             return try_path
+
         # See if there's a version with spaces
         # instead of _s, allowing import Module_Name
         # to resolve to 'Module Name.{ext}'
-        try_path = try_path.replace("_", " ")
+        try_path = os.path.join(try_dir, fname.replace("_", " "))
+        print("Trying with spaces turned to underscores: " + try_path)
         if os.path.exists(try_path):
             return try_path
