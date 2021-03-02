@@ -38,6 +38,12 @@ This special code comment is called a Margo note. Margo notes in Python cells be
 
 Learn more about the underlying Margo syntax [here](https://github.com/jakekara/nbdl/).
 
+An alias for `ignore-cell` is `skip`. So this does the same thing:
+
+```python
+# :: skip ::
+print("This code will not be executed when imported with margo-loader")
+``` 
 ## Creating virtual submodules
 
 You can organize code cells into virtual submodules within
@@ -73,6 +79,47 @@ import `margo_loader`.
 'Oh, uhh, hi world...'
 >>>
 ```
+
+## Prevent a notebook from being imported
+
+To prevent a notebook from being imported, use:
+
+```python
+# :: not-a-module ::
+```
+
+or 
+
+```python
+# :: do-not-import ::
+```
+
+These are currently aliases with the same behavior. If you try to import a notebook that contains a `do-not-import`/`not-a-module` declaration, it will raise an exception.
+
+## Skipping multiple cells
+
+If you want to ignore a lot of cells during import, you can use
+
+
+```python
+# :: module-stop ::
+```
+
+and
+
+```python
+# :: module-start :: 
+```
+
+to exclude blocks of cells.
+
+Any cell including and after a cell that contains `module-stop` will be excluded during import until a `module-start` cell is encountered.
+
+Conversely, any cell including and after a cell that contains `module-start` will be excluded during import until a `module-stop` is encountered.
+
+Note that you can also use `start` and `stop` instead of `module-start` and `module-stop`. These are aliases.
+
+You can use `module-stop` with no subsequent `module-start`. This will have the effect of ignoring all subsequent cells.
 
 ## Working with percent-formatted notebooks
 
