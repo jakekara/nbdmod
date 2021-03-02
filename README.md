@@ -1,37 +1,37 @@
 # margo-loader
 
-> Import computational Jupyter Notebooks notebooks as Python modules, with
-> support for Margo syntax.
+> Import Jupyter Notebooks notebooks as Python modules
+
+## Demo Notebooks  
+
+Want to see Margo Loader in action before installing it? Here's a live [demo notebook](https://colab.research.google.com/drive/1X1vuPRrj7SOpGl71wFCwFNgX40W18Kyl#scrollTo=WyrdS8A06eA6) on Google Colaboratory.
+
+A more realistic suite of notebooks for background deletion and color extraction on William Blake prints is available in this [Binder](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/) VM, which runs in a browser without installation.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/)
 
 ## Installation
 
 To install margo-loader, run:
 
 ```bash
-pip install git+https://github.com/jakekara/nbmod
+pip install git+https://github.com/margo-notebooks/margo-loader-py
 ```
 
 ## Importing a notebook
 
-Assuming you have a file called "notebook.ipynb" somewhere in your import path:
+Assuming you have a file called "notebook.ipynb":
 
 ```python
 import margo_loader
 import notebook
 ```
 
-## Why this approach is different
+## ignore-cell
 
-Previous attempts have been made to make notebooks importable like normal Python
-source files. While these attempts work just fine, they do not account for a
-non-technical problem: Notebook code is written differently from modular code,
-so it often includes a lot of code you don't want to run when you import it
-outside of the original notebook context.
+Not every cell in a Notebook makes sense to include in its module representation.
 
-This loader works largely the same as those past projects, but it adds support
-for Margo, a lightweight syntax for annotating notebooks with extra information.
-
-If you want to prevent a cell from being exported, start your cell with the specially-formatted comment line `# :: ignore-cell ::`, like this:
+If you want to prevent a cell from being exported, start the cell with the specially-formatted comment line `# :: ignore-cell ::`, like this:
 
 ```python
 # :: ignore-cell ::
@@ -42,9 +42,15 @@ This special code comment is called a Margo note. Margo notes in Python cells be
 
 Learn more about the underlying Margo syntax [here](https://github.com/jakekara/nbdl/).
 
+An alias for `ignore-cell` is `skip`. So this does the same thing:
+
+```python
+# :: skip ::
+print("This code will not be executed when imported with margo-loader")
+``` 
 ## Creating virtual submodules
 
-Another feature of margo-loader is that you can create virtual submodules within
+You can organize code cells into virtual submodules within
 a notebook. This in effect allows you to group cells from the same notebook.
 Here's an example of a few cells from the file
 `test_notebooks/greetings.ipynb` in this repo.
@@ -65,7 +71,7 @@ def say_hello(to="world"):
 
 Notice we define the same `say_hello` function twice. If the entire notebook
 were imported, the second `say_hello` would overwrite the first. However, we can
-import either of these submodules using Python's standard import syntax once we
+import either of these submodules or both using Python's standard import syntax once we
 import `margo_loader`.
 
 ```python
@@ -78,9 +84,46 @@ import `margo_loader`.
 >>>
 ```
 
-The concept of programming with multiple views of the same source code is
-articulated well in [Calliss 1991, A comparison of module constructs in
-programming languages](https://dl.acm.org/doi/10.1145/122203.122206)
+## Prevent a notebook from being imported
+
+To prevent a notebook from being imported, use:
+
+```python
+# :: not-a-module ::
+```
+
+or 
+
+```python
+# :: do-not-import ::
+```
+
+These are currently aliases with the same behavior. If you try to import a notebook that contains a `do-not-import`/`not-a-module` declaration, it will raise an exception.
+
+## Skipping multiple cells
+
+If you want to ignore a lot of cells during import, you can use
+
+
+```python
+# :: module-stop ::
+```
+
+and
+
+```python
+# :: module-start :: 
+```
+
+to exclude blocks of cells.
+
+Any cell including and after a cell that contains `module-stop` will be excluded during import until a `module-start` cell is encountered.
+
+Conversely, any cell including and after a cell that contains `module-start` will be excluded during import until a `module-stop` is encountered.
+
+Note that you can also use `start` and `stop` instead of `module-start` and `module-stop`. These are aliases.
+
+You can use `module-stop` with no subsequent `module-start`. This will have the effect of ignoring all subsequent cells.
 
 ## Working with percent-formatted notebooks
 
@@ -96,10 +139,7 @@ a code-cell notebook.
 
 ## Prior art
 
-This project borrows code and implementation approach from [a Jupyter Notebook
+This project borrows its implementation approach from [a Jupyter Notebook
 documentation
 example](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html)
-that imports notebooks in their entirety as if they were `.py` files. As
-described above, my project aims to build upon this with the addition of margo
-syntax for preprocessing. I believe these enhancements address the reason that
-example has largely been abandoned.
+that imports notebooks in their entirety as if they were `.py` files. The key difference Margo Loader adds is use of Margo notes to create preoprocessor directives  `ignore-cell` and `submodule`.

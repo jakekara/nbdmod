@@ -19,3 +19,8 @@ def test_imports_ipynb_docstring():
     from test_notebooks import hello_notebook
 
     assert hello_notebook.__doc__.startswith("# A regular notebook")
+
+def test_loads_notebook_with_spaces():
+    from test_notebooks import hello_with_spaces
+
+    assert hello_with_spaces.greeting == "Hello, world!"
