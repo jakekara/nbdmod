@@ -33,6 +33,5 @@ def resolve_path(fullname, *, path=None, ext="nbpy"):
         # instead of _s, allowing import Module_Name
         # to resolve to 'Module Name.{ext}'
         try_path = os.path.join(try_dir, fname.replace("_", " "))
-        print("Trying with spaces turned to underscores: " + try_path)
         if os.path.exists(try_path):
             return try_path
