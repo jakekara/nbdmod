@@ -13,7 +13,7 @@ def read_requirements():
 
 setuptools.setup(
     name="margo-loader", 
-    version="0.0.3a0",
+    version="0.0.4a0",
     author="Jake Kara",
     author_email="jake@jakekara.com",
     description="Import Jupyter notebooks using Margo notebook margin notebook syntax",

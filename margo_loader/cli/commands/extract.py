@@ -6,6 +6,7 @@ from margo_parser.api import (
     MargoStatementTypes,
 )
 import json
+import yaml
 
 
 def register(subparsers: ArgumentParser):
@@ -13,10 +14,20 @@ def register(subparsers: ArgumentParser):
 
     parser.add_argument("-i", "--input", metavar="NOTEBOOK_FILE", required="true")
     parser.add_argument(
-        "-f", "--format", metavar="DECLARATION_FORMAT", choices=["json", "yaml", "raw"]
+        "-f",
+        "--format",
+        metavar="DECLARATION_FORMAT",
+        choices=["json", "yaml", "raw"],
+        default="json",
     )
     parser.add_argument(
         "-p", "--property", metavar="PROPERTY", help="The property to extract"
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Don't unwrap values in arrays of length 1",
     )
 
 
@@ -35,7 +46,7 @@ def main(args):
         if args.format == "raw":
             val = str(val)
         else:
-            val = [val]
+            val = val
 
         if name not in declarations:
             declarations[name] = val
@@ -56,13 +67,28 @@ def main(args):
             add_to_declaration(statement.name, statement.value)
 
     def print_report():
+
         if args.property and args.property not in declarations:
             return
-        elif args.property and args.format == "raw":
-            print(declarations[args.property])
-        elif args.property:
-            print(json.dumps(declarations[args.property], indent=2))
-        else:
-            print(json.dumps(declarations, indent=2))
+
+        result = declarations
+
+        if args.property:
+            result = result[args.property]
+
+        if (not args.verbose) and type(result) == list and len(result) == 1:
+            result = result[0]
+
+        if args.format == "raw":
+            print(result)
+            return
+
+        if args.format == "yaml":
+            print(yaml.dump(result))
+            return
+
+        if args.format == "json":
+            print(json.dumps(result, indent=2))
+            return
 
     print_report()
