@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "margo-loader"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="Jake Kara", email="jake@jakekara.com" },
 ]
@@ -28,6 +28,9 @@ margo_parser = ['tokenizer/margo.lark']
 "Homepage" = "https://github.com/margo-notebooks/margo-loader-py"
 "Bug Tracker" = "https://github.com/margo-notebooks/margo-loader-py/issues"
 
+
+[project.scripts]
+margo-tool = "margo_loader.cli.__main__:main"
 
 [tool.black]
 line-length = 80
