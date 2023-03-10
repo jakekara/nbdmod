@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling","hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "margo-loader"
+version = "1.0.0"
+authors = [
+  { name="Jake Kara", email="jake@jakekara.com" },
+]
+description = "Import Jupyter notebooks using Margo notebook margin notebook syntax"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[options.package-data]
+margo_parser = ['tokenizer/margo.lark']
+
+[project.urls]
+"Homepage" = "https://github.com/margo-notebooks/margo-loader-py"
+"Bug Tracker" = "https://github.com/margo-notebooks/margo-loader-py/issues"
+
+
+[tool.black]
+line-length = 80

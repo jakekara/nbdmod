@@ -2,6 +2,10 @@
 
 > Import Jupyter Notebooks notebooks as Python modules
 
+## Video tutorial
+
+[Live Coding Demo: Using Jupyter Notebooks as Python Modules with Margo Loader](https://www.youtube.com/watch?v=6EgsAb56jY0).
+
 ## Demo Notebooks  
 
 Want to see Margo Loader in action before installing it? Here's a live [demo notebook](https://colab.research.google.com/drive/1X1vuPRrj7SOpGl71wFCwFNgX40W18Kyl#scrollTo=WyrdS8A06eA6) on Google Colaboratory.
@@ -135,7 +139,7 @@ here](https://code.visualstudio.com/docs/python/jupyter-support-py).
 Look at `test_notebooks/hello_notebook_pynb.pynb` in this repo for an example of
 a code-cell notebook.
 
-**STABILITY NOTE: This is an alpha feature. The .pynb extension may be changed in a future version**
+**STABILITY NOTE:** *This is an alpha feature. The .pynb extension may be changed in a future version*
 
 ## Prior art
 
@@ -143,3 +147,15 @@ This project borrows its implementation approach from [a Jupyter Notebook
 documentation
 example](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html)
 that imports notebooks in their entirety as if they were `.py` files. The key difference Margo Loader adds is use of Margo notes to create preoprocessor directives  `ignore-cell` and `submodule`.
+
+## Development quick-start
+
+To get started developing Margo in a virutal env, run:
+
+```bash
+python -m venv venv
+. ./venv/bin/activate
+pip install -r requirements
+python setup.py develop
+pytest
+```
