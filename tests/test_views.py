@@ -1,4 +1,4 @@
-import margo_loader
+import margo_loader  # noqa: F401
 
 
 def test_imports_both_views():

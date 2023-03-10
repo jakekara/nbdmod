@@ -10,9 +10,13 @@ import yaml
 
 
 def register(subparsers: ArgumentParser):
-    parser = subparsers.add_parser("extract", help="extract variables from notebook")
+    parser = subparsers.add_parser(
+        "extract", help="extract variables from notebook"
+    )
 
-    parser.add_argument("-i", "--input", metavar="NOTEBOOK_FILE", required="true")
+    parser.add_argument(
+        "-i", "--input", metavar="NOTEBOOK_FILE", required="true"
+    )
     parser.add_argument(
         "-f",
         "--format",
@@ -37,7 +41,9 @@ def main(args):
         nb = read(args.input, as_version=4)
     except Exception as e:
         raise (
-            f"Extract subcommand: Could not read notebook file: '{args.input}': " + e
+            "Extract subcommand: Could not "
+            + f"read notebook file: '{args.input}': "
+            + e
         )
 
     declarations = {}

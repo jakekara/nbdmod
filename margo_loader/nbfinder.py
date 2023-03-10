@@ -12,7 +12,8 @@ class NotebookFinder(object):
     def __init__(self):
         self.loaders = {}
 
-    # TODO - Make use of the target: https://www.python.org/dev/peps/pep-0451/#the-target-parameter-of-find-spec
+    # TODO - Make use of the target:
+    # TODO - https://www.python.org/dev/peps/pep-0451/#the-target-parameter-of-find-spec  # noqa: E501
     def find_spec(self, name, path, target=None):
         # if not (find_notebook(name, path)):
         #     return None
