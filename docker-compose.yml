@@ -2,9 +2,11 @@ services:
   notebook: 
     image: jupyter/base-notebook
     ports: 
-      - 8888:8888
+      - 8000:8000
     volumes:
       - ./work:/user/home/joyvan
+    environment:
+      - JUPYTER_PORT=8000
   py38:
       image: python:3.8
       volumes:
