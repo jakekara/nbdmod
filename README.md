@@ -148,14 +148,3 @@ documentation
 example](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html)
 that imports notebooks in their entirety as if they were `.py` files. The key difference Margo Loader adds is use of Margo notes to create preoprocessor directives  `ignore-cell` and `submodule`.
 
-## Development quick-start
-
-To get started developing Margo in a virutal env, run:
-
-```bash
-python -m venv venv
-. ./venv/bin/activate
-pip install -r requirements
-python setup.py develop
-pytest
-```
