@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "margo-loader"
-version = "1.0.2"
+version = "1.0.3"
 authors = [
   { name="Jake Kara", email="jake@jakekara.com" },
 ]
