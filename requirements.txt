@@ -1,2 +1,2 @@
 margo-parser>=1,<2
-nbformat==5.0.7
+nbformat>5,<6
