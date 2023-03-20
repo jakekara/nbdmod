@@ -6,13 +6,11 @@
 
 [Live Coding Demo: Using Jupyter Notebooks as Python Modules with Margo Loader](https://www.youtube.com/watch?v=6EgsAb56jY0).
 
-## Demo Notebooks  
+## Demo Notebooks
 
-Want to see Margo Loader in action before installing it? Here's a live [demo notebook](https://colab.research.google.com/drive/1X1vuPRrj7SOpGl71wFCwFNgX40W18Kyl#scrollTo=WyrdS8A06eA6) on Google Colaboratory.
-
-A more realistic suite of notebooks for background deletion and color extraction on William Blake prints is available in this [Binder](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/) VM, which runs in a browser without installation.
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/zenodo/10.5281/zenodo.4554402/)
+* [Official tutorial (GitHub)](https://github.com/margo-notebooks/modular-notebook-tutorial) on using Margo loader to write Modular Jupyter notebooks. [Binder](https://mybinder.org/v2/gh/margo-notebooks/modular-notebook-tutorial/HEAD)
+* [Quick demo notebook (Google Colab)](https://colab.research.google.com/drive/1X1vuPRrj7SOpGl71wFCwFNgX40W18Kyl#scrollTo=WyrdS8A06eA6) in Google Colaboratory (no install needed).
+* [A more realistic suite of notebooks (GitHub)](https://github.com/jakekara/color-extraction-methodology) for background deletion and color extraction on William Blake prints, written for the Yale Digital Humanities Lab. [Binder](https://mybinder.org/v2/zenodo/10.5281/zenodo.7709475/)
 
 ## Installation
 
@@ -148,14 +146,3 @@ documentation
 example](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Importing%20Notebooks.html)
 that imports notebooks in their entirety as if they were `.py` files. The key difference Margo Loader adds is use of Margo notes to create preoprocessor directives  `ignore-cell` and `submodule`.
 
-## Development quick-start
-
-To get started developing Margo in a virutal env, run:
-
-```bash
-python -m venv venv
-. ./venv/bin/activate
-pip install -r requirements
-python setup.py develop
-pytest
-```

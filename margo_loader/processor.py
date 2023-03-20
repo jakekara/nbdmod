@@ -4,10 +4,7 @@ from margo_parser.api import (
     MargoMarkdownCellPreambleBlock,
     MargoPythonCellPreambleBlock,
     MargoStatementTypes,
-    MargoDirective,
 )
-import json
-import re
 import sys
 import types
 
@@ -73,7 +70,9 @@ def preamble_contains_not_a_module(cell_preamble: MargoBlock):
     """Determine if a notebook declares that it is not to be imported
     by using the 'not-a-module' directive"""
 
-    return preamble_contains_directive(cell_preamble, ["not-a-module", "do-not-import"])
+    return preamble_contains_directive(
+        cell_preamble, ["not-a-module", "do-not-import"]
+    )
 
 
 def get_preamble(cell):
@@ -107,7 +106,8 @@ class Processor:
         for margo_cell in margo_cells:
             if preamble_contains_not_a_module(margo_cell["preamble"]):
                 raise Exception(
-                    "Cannot import: This notebook declares that it is not a module."
+                    "Cannot import: This notebook "
+                    + "declares that it is not a module."
                 )
 
         def exec_wrapper(code, context):
@@ -124,7 +124,10 @@ class Processor:
             if idx == 0 and cell.cell_type == "markdown":
                 self.module.__doc__ = cell.source
 
-            # cell_preamble = get_preamble_block(cell.source, cell_type=cell.cell_type)
+            # cell_preamble = get_preamble_block(
+            #   cell.source,
+            #   cell_type=cell.cell_type
+            # )
             # if cell.cell_type == "markdown":
             #     cell_preamble = MargoMarkdownCellPreambleBlock(cell.source)
             # else:

@@ -1,5 +1,5 @@
 def test_nbdmod_can_load():
-    import margo_loader
+    import margo_loader  # noqa: F401
 
 
 def test_nbdmod_imports_cells():

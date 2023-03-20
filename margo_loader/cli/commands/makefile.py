@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from os import stat
 from nbformat import read
 from margo_parser.api import (
     MargoMarkdownCellPreambleBlock,
@@ -9,9 +8,13 @@ from margo_parser.api import (
 
 
 def register(subparsers: ArgumentParser):
-    parser = subparsers.add_parser("makefile", help="generate Makefile from notebook")
+    parser = subparsers.add_parser(
+        "makefile", help="generate Makefile from notebook"
+    )
 
-    parser.add_argument("-i", "--input", metavar="NOTEBOOK_FILE", required="true")
+    parser.add_argument(
+        "-i", "--input", metavar="NOTEBOOK_FILE", required="true"
+    )
 
 
 def main(args):
@@ -20,7 +23,9 @@ def main(args):
         nb = read(args.input, as_version=4)
     except Exception as e:
         raise (
-            f"Makefile subcommand: Could not read notebook file: '{args.input}': " + e
+            "Makefile subcommand: Could not "
+            + f"read notebook file: '{args.input}': "
+            + e
         )
 
     notebook_file = args.input
@@ -57,7 +62,8 @@ def main(args):
         first_file = output_files[0]
 
         # force rebuild
-        # approach described here: https://www.gnu.org/software/automake/manual/html_node/Multiple-Outputs.html
+        # approach described here:
+        # https://www.gnu.org/software/automake/manual/html_node/Multiple-Outputs.html
         rebuild = "## Recover from the removal of $@\n"
         rebuild += f"\t@test -f $@ || rm -f {first_file}\n"
         rebuild += f"\t@test -f $@ || $(MAKE) $(AM_MAKEFLAGS) {first_file}\n"

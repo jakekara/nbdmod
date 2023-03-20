@@ -1,7 +1,9 @@
 import os
 
 
-def resolve_multiple_extensions(fullname, *, path=None, extensions=["nbpy", "ipynb"]):
+def resolve_multiple_extensions(
+    fullname, *, path=None, extensions=["nbpy", "ipynb"]
+):
     for ext in extensions:
         resolved = resolve_path(fullname, path=path, ext=ext)
         if resolved is not None:
